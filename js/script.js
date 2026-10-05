@@ -57,6 +57,13 @@ function renderCards(deck) {
     const card = document.createElement("div");
     card.classList.add("card");
     card.textContent = cardName;
+    // TODO: прочитать подробнее про датасеты
+    card.dataset.cardName = cardName;
+
+    card.addEventListener("click", () => {
+      card.classList.toggle("flipped");
+    });
+
     gameField.appendChild(card);
   }
 
