@@ -49,6 +49,35 @@ function shuffleCards() {
 
 let cardDeck = shuffleCards();
 
+let firstCard = null;
+let lockBoard = false;
+
+function handleCardClick(card) {
+  if (lockBoard) return;
+  if (card.classList.contains("flipped")) return;
+
+  card.classList.add("flipped");
+
+  if (firstCard === null) {
+    firstCard = card;
+    return;
+  }
+
+  if (card.dataset.cardName === firstCard.dataset.cardName) {
+    card.classList.add("matched");
+    firstCard.classList.add("matched");
+    firstCard = null;
+  } else {
+    lockBoard = true;
+    setTimeout(() => {
+      card.classList.remove("flipped");
+      firstCard.classList.remove("flipped");
+      firstCard = null;
+      lockBoard = false;
+    }, 1000);
+  }
+}
+
 function renderCards(deck) {
   const gameField = document.createElement("div");
   gameField.classList.add("game-field");
@@ -60,9 +89,7 @@ function renderCards(deck) {
     // TODO: прочитать подробнее про датасеты
     card.dataset.cardName = cardName;
 
-    card.addEventListener("click", () => {
-      card.classList.toggle("flipped");
-    });
+    card.addEventListener("click", () => handleCardClick(card));
 
     gameField.appendChild(card);
   }
