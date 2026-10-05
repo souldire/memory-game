@@ -47,4 +47,20 @@ function shuffleCards() {
   return shuffledCards;
 }
 
-shuffleCards();
+let cardDeck = shuffleCards();
+
+function renderCards(deck) {
+  const gameField = document.createElement("div");
+  gameField.classList.add("game-field");
+
+  for (const cardName of deck) {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.textContent = cardName;
+    gameField.appendChild(card);
+  }
+
+  document.body.appendChild(gameField);
+}
+
+renderCards(cardDeck);
