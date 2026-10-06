@@ -1,14 +1,14 @@
 // TODO: разобрать проект еще раз или написать код еще раз для закрепления
 
 const CARDS = [
-  "card1",
-  "card2",
-  "card3",
-  "card4",
-  "card5",
-  "card6",
-  "card7",
-  "card8",
+  "drest",
+  "fetid",
+  "ghuun",
+  "isiset",
+  "mutanus",
+  "ravitz",
+  "setesh",
+  "zerontu",
 ];
 
 function shuffleCards() {
@@ -204,9 +204,21 @@ function renderCards(deck) {
   for (const cardName of deck) {
     const card = document.createElement("div");
     card.classList.add("card");
-    card.textContent = cardName;
     // TODO: прочитать подробнее про датасеты
     card.dataset.cardName = cardName;
+
+    const backFace = document.createElement("div");
+    backFace.classList.add("card-face", "card-face--back");
+
+    const frontFace = document.createElement("div");
+    frontFace.classList.add("card-face", "card-face--front");
+
+    const faceImg = document.createElement("img");
+    faceImg.src = `assets/${cardName}.png`;
+    faceImg.alt = cardName;
+    frontFace.append(faceImg);
+
+    card.append(backFace, frontFace);
 
     card.addEventListener("click", () => handleCardClick(card));
 
