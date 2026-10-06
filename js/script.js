@@ -1,3 +1,5 @@
+// TODO: разобрать проект еще раз или написать код еще раз для закрепления
+
 const CARDS = [
   "card1",
   "card2",
@@ -60,6 +62,9 @@ let pairs = 0;
 let movesEl = null;
 let pairsEl = null;
 
+let flipTimer = null;
+let gameFieldEl = null;
+
 function handleCardClick(card) {
   if (lockBoard) return;
   if (card.classList.contains("flipped")) return;
@@ -85,7 +90,7 @@ function handleCardClick(card) {
     firstCard = null;
   } else {
     lockBoard = true;
-    setTimeout(() => {
+    flipTimer = setTimeout(() => {
       card.classList.remove("flipped");
       firstCard.classList.remove("flipped");
       firstCard = null;
@@ -118,12 +123,12 @@ function createModal() {
 
   function open() {
     overlay.classList.add("visible");
-    document.body.style.overflow = "hidden"; 
+    document.body.style.overflow = "hidden";
   }
 
   function close() {
     overlay.classList.remove("visible");
-    document.body.style.overflow = ""; 
+    document.body.style.overflow = "";
   }
 
   return { box, open, close };
@@ -140,8 +145,7 @@ function showWin() {
 
   const playAgain = document.createElement("button");
   playAgain.textContent = "Новая игра";
-  
-  playAgain.addEventListener("click", () => winModal.close());
+  playAgain.addEventListener("click", startNewGame);
 
   const closeButton = document.createElement("button");
   closeButton.textContent = "Закрыть";
@@ -151,9 +155,32 @@ function showWin() {
   winModal.open();
 }
 
+function startNewGame() {
+  clearTimeout(flipTimer);
+
+  firstCard = null;
+  lockBoard = false;
+  moves = 0;
+  pairs = 0;
+  movesEl.textContent = moves;
+  pairsEl.textContent = pairs;
+
+  if (gameFieldEl) {
+    gameFieldEl.remove();
+  }
+  cardDeck = shuffleCards();
+  renderCards(cardDeck);
+
+  winModal.close();
+}
+
 function createHeader() {
   const header = document.createElement("header");
   header.classList.add("game-header");
+
+  const newGameButton = document.createElement("button");
+  newGameButton.textContent = "Новая игра";
+  newGameButton.addEventListener("click", startNewGame);
 
   const movesTitle = document.createElement("span");
   movesTitle.textContent = "Ходы:";
@@ -165,13 +192,14 @@ function createHeader() {
   pairsEl = document.createElement("span");
   pairsEl.textContent = pairs;
 
-  header.append(movesTitle, movesEl, pairsTitle, pairsEl);
+  header.append(newGameButton, movesTitle, movesEl, pairsTitle, pairsEl);
   document.body.append(header);
 }
 
 function renderCards(deck) {
   const gameField = document.createElement("div");
   gameField.classList.add("game-field");
+  gameFieldEl = gameField;
 
   for (const cardName of deck) {
     const card = document.createElement("div");
