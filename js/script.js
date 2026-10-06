@@ -52,6 +52,14 @@ let cardDeck = shuffleCards();
 let firstCard = null;
 let lockBoard = false;
 
+// счетчики ходов и совпадений
+let moves = 0;
+let pairs = 0;
+
+// переменные для вывода счетчиов на страницу
+let movesEl = null;
+let pairsEl = null;
+
 function handleCardClick(card) {
   if (lockBoard) return;
   if (card.classList.contains("flipped")) return;
@@ -63,9 +71,14 @@ function handleCardClick(card) {
     return;
   }
 
+  moves += 1;
+  movesEl.textContent = moves;
+
   if (card.dataset.cardName === firstCard.dataset.cardName) {
     card.classList.add("matched");
     firstCard.classList.add("matched");
+    pairs += 1;
+    pairsEl.textContent = pairs;
     firstCard = null;
   } else {
     lockBoard = true;
@@ -76,6 +89,24 @@ function handleCardClick(card) {
       lockBoard = false;
     }, 1000);
   }
+}
+
+function createHeader() {
+  const header = document.createElement("header");
+  header.classList.add("game-header");
+
+  const movesTitle = document.createElement("span");
+  movesTitle.textContent = "Ходы:";
+  movesEl = document.createElement("span");
+  movesEl.textContent = moves;
+
+  const pairsTitle = document.createElement("span");
+  pairsTitle.textContent = "Пары:";
+  pairsEl = document.createElement("span");
+  pairsEl.textContent = pairs;
+
+  header.append(movesTitle, movesEl, pairsTitle, pairsEl);
+  document.body.append(header);
 }
 
 function renderCards(deck) {
@@ -97,4 +128,5 @@ function renderCards(deck) {
   document.body.appendChild(gameField);
 }
 
+createHeader();
 renderCards(cardDeck);
