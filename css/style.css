@@ -45,3 +45,29 @@ body {
   border: 2px solid #2e7d32;
   box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.3);
 }
+
+/* modal */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 400px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

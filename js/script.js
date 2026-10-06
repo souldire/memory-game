@@ -79,6 +79,9 @@ function handleCardClick(card) {
     firstCard.classList.add("matched");
     pairs += 1;
     pairsEl.textContent = pairs;
+    if (pairs === CARDS.length) {
+      showWin();
+    }
     firstCard = null;
   } else {
     lockBoard = true;
@@ -89,6 +92,63 @@ function handleCardClick(card) {
       lockBoard = false;
     }, 1000);
   }
+}
+
+function createModal() {
+  const overlay = document.createElement("div");
+  overlay.classList.add("modal-overlay");
+
+  const box = document.createElement("div");
+  box.classList.add("modal");
+
+  overlay.append(box);
+  document.body.append(overlay);
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      close();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      close();
+    }
+  });
+
+  function open() {
+    overlay.classList.add("visible");
+    document.body.style.overflow = "hidden"; 
+  }
+
+  function close() {
+    overlay.classList.remove("visible");
+    document.body.style.overflow = ""; 
+  }
+
+  return { box, open, close };
+}
+
+const winModal = createModal();
+
+function showWin() {
+  const title = document.createElement("h2");
+  title.textContent = "Победа!";
+
+  const text = document.createElement("p");
+  text.textContent = `Вы нашли все пары за ${moves} ходов`;
+
+  const playAgain = document.createElement("button");
+  playAgain.textContent = "Новая игра";
+  
+  playAgain.addEventListener("click", () => winModal.close());
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "Закрыть";
+  closeButton.addEventListener("click", () => winModal.close());
+
+  winModal.box.replaceChildren(title, text, playAgain, closeButton);
+  winModal.open();
 }
 
 function createHeader() {
