@@ -72,7 +72,7 @@ body {
 }
 
 .card-face--front {
-  background-color: #1d2a44;
+  background: none;
   color: #fff;
   transform: rotateY(180deg);
 }
