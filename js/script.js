@@ -137,6 +137,16 @@ function createModal() {
 const winModal = createModal();
 const leaderboardModal = createModal();
 
+function formatDate(timestamp) {
+  const date = new Date(timestamp);
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}.${month}.${year}`;
+}
+
 function showLeaderboard() {
   const title = document.createElement("h2");
   title.textContent = "Таблица лидеров";
@@ -144,14 +154,45 @@ function showLeaderboard() {
   const list = document.createElement("ol");
   list.classList.add("leaderboard-list");
 
-  const emptyMessage = document.createElement("p");
-  emptyMessage.textContent = "Пока нет результатов";
-
   const closeButton = document.createElement("button");
   closeButton.textContent = "Закрыть";
   closeButton.addEventListener("click", () => leaderboardModal.close());
 
-  leaderboardModal.box.replaceChildren(title, list, emptyMessage, closeButton);
+  const results = loadResults();
+
+  results.sort((a, b) => {
+    if (a.moves !== b.moves) {
+      return a.moves - b.moves;
+    }
+    return a.date - b.date;
+  });
+
+  const top = results.slice(0, 10);
+
+  for (let i = 0; i < top.length; i += 1) {
+    const row = document.createElement("li");
+
+    const place = document.createElement("span");
+    place.textContent = `${i + 1}.`;
+
+    const movesInfo = document.createElement("span");
+    movesInfo.textContent = `${top[i].moves} ходов`;
+
+    const dateInfo = document.createElement("span");
+    dateInfo.textContent = formatDate(top[i].date);
+
+    row.append(place, movesInfo, dateInfo);
+    list.append(row);
+  }
+
+  if (top.length === 0) {
+    const emptyMessage = document.createElement("p");
+    emptyMessage.textContent = "Пока нет результатов";
+    leaderboardModal.box.replaceChildren(title, emptyMessage, closeButton);
+  } else {
+    leaderboardModal.box.replaceChildren(title, list, closeButton);
+  }
+
   leaderboardModal.open();
 }
 
@@ -173,8 +214,17 @@ function saveResult(movesCount) {
     date: Date.now(),
   };
 
-  results.push(result);
+  const isDuplicate = results.some(
+    (item) =>
+      item.moves === result.moves &&
+      new Date(item.date).toDateString() === new Date(result.date).toDateString()
+  );
 
+  if (isDuplicate) {
+    return;
+  }
+
+  results.push(result);
   localStorage.setItem(RESULTS_KEY, JSON.stringify(results));
 }
 
