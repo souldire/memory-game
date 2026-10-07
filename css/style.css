@@ -114,3 +114,32 @@ body {
   flex-direction: column;
   gap: 16px;
 }
+
+.modal button {
+  font-size: 18px;
+  padding: 8px 20px;
+  border: 2px solid #4a6fa5;
+  border-radius: 8px;
+  background: #4a6fa5;
+  color: #fff;
+  cursor: pointer;
+}
+
+.leaderboard-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 280px;
+}
+
+.leaderboard-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}

@@ -135,8 +135,52 @@ function createModal() {
 }
 
 const winModal = createModal();
+const leaderboardModal = createModal();
+
+function showLeaderboard() {
+  const title = document.createElement("h2");
+  title.textContent = "Таблица лидеров";
+
+  const list = document.createElement("ol");
+  list.classList.add("leaderboard-list");
+
+  const emptyMessage = document.createElement("p");
+  emptyMessage.textContent = "Пока нет результатов";
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "Закрыть";
+  closeButton.addEventListener("click", () => leaderboardModal.close());
+
+  leaderboardModal.box.replaceChildren(title, list, emptyMessage, closeButton);
+  leaderboardModal.open();
+}
+
+const RESULTS_KEY = "memory-game.results";
+
+function loadResults() {
+  const raw = localStorage.getItem(RESULTS_KEY);
+  if (raw === null) {
+    return [];
+  }
+  return JSON.parse(raw);
+}
+
+function saveResult(movesCount) {
+  const results = loadResults();
+
+  const result = {
+    moves: movesCount,
+    date: Date.now(),
+  };
+
+  results.push(result);
+
+  localStorage.setItem(RESULTS_KEY, JSON.stringify(results));
+}
 
 function showWin() {
+  saveResult(moves);
+
   const title = document.createElement("h2");
   title.textContent = "Победа!";
 
@@ -182,6 +226,10 @@ function createHeader() {
   newGameButton.textContent = "Новая игра";
   newGameButton.addEventListener("click", startNewGame);
 
+  const leaderboardButton = document.createElement("button");
+  leaderboardButton.textContent = "Таблица лидеров";
+  leaderboardButton.addEventListener("click", showLeaderboard);
+
   const movesTitle = document.createElement("span");
   movesTitle.textContent = "Ходы:";
   movesEl = document.createElement("span");
@@ -192,7 +240,7 @@ function createHeader() {
   pairsEl = document.createElement("span");
   pairsEl.textContent = pairs;
 
-  header.append(newGameButton, movesTitle, movesEl, pairsTitle, pairsEl);
+  header.append(newGameButton, leaderboardButton, movesTitle, movesEl, pairsTitle, pairsEl);
   document.body.append(header);
 }
 
